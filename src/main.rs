@@ -60,10 +60,17 @@ println!("{}",s);
     let str = String::from("Hello");
     let length = calculate_length(&str);
 
-    println!("str :{},length:{}",str,length)
- 
+    println!("str :{},length:{}",str,length);
+    
+    let new_str = "ddddd";
+
+    
 
 }
+
+fn greet(name: String) {
+    println!("Hello, {}!", name);
+  }
 
 fn calculate_length(s: &String) -> usize {
     s.len()
