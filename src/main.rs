@@ -52,6 +52,12 @@ takes_ownership(s.clone());
 
 println!("{}",s);
 
+ let test_x = 5;
+ let test_y = &test_x;
+ assert_eq!(5,test_x);
+ assert_eq!(5,*test_y);
+
+
 }
 
 fn takes_ownership(some_string: String) { // some_string 进入作用域
