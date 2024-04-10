@@ -57,8 +57,18 @@ println!("{}",s);
  assert_eq!(5,test_x);
  assert_eq!(5,*test_y);
 
+    let str = String::from("Hello");
+    let length = calculate_length(&str);
+
+    println!("str :{},length:{}",str,length)
+ 
 
 }
+
+fn calculate_length(s: &String) -> usize {
+    s.len()
+}
+
 
 fn takes_ownership(some_string: String) { // some_string 进入作用域
     println!("{}", some_string);
