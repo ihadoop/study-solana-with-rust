@@ -33,6 +33,37 @@ let b = Complex::new(11.1, 22.2);
 let result = a+b;
 println!("{}+{}i",result.re,result.im);
 
+println!("{}",std::mem::size_of_val(&f));
+
+
+
+let kk = {
+    1+2
+};
+
+
+println!("{}",kk);
+plus_or_minus(1_i32);
+
+
+let mut s  = String::from("ddd");
+s.push_str(",dddd");
+takes_ownership(s.clone());
+
+println!("{}",s);
+
+}
+
+fn takes_ownership(some_string: String) { // some_string 进入作用域
+    println!("{}", some_string);
+} 
+
+fn plus_or_minus(x:i32) -> i32 {
+    if x > 5 {
+        return x - 5
+    }
+
+    x + 5
 }
 
 fn demo() {
