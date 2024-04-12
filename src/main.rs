@@ -64,10 +64,40 @@ println!("{}",s);
     
     let new_str = "ddddd";
 
-    
+    string_test();
+
 
 }
 
+
+fn string_test(){
+
+let mut str = String::from("hello,");
+str.push_str("world");
+println!("{}",str);
+
+str.insert_str(4, "abc");
+println!("{}",str);
+
+dbg!(str.pop());
+
+let mut string_pop = String::from("rust pop 中文!");
+    let p1 = string_pop.pop();
+    let p2 = string_pop.pop();
+    dbg!(p1);
+    dbg!(p2);
+    dbg!(string_pop);
+    
+
+    let s1 = String::from("hello");
+    let s2  =String::from("world");
+    let s3 = s1 + &s2;
+    dbg!(s2);
+    let s4 = format!("{}",s3);
+    dbg!(s4);
+    //dbg!(s4);
+
+}
 fn greet(name: String) {
     println!("Hello, {}!", name);
   }
