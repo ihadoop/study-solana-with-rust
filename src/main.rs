@@ -96,8 +96,19 @@ let mut string_pop = String::from("rust pop 中文!");
     let s4 = format!("{}",s3);
     dbg!(s4);
     //dbg!(s4);
+    tuple_test();
 
 }
+fn tuple_test(){
+
+    let tup = (1,2,3);
+    let (x,y,z) = tup;
+    
+    print!("{}",x);
+
+
+}
+
 fn greet(name: String) {
     println!("Hello, {}!", name);
   }
