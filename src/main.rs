@@ -84,6 +84,31 @@ let p11 = P{x:1,y:2};
 println!("{}",p11.x());
 
 }
+pub trait Summary{
+    fn summary(&self)->String;
+}
+
+pub struct Post{
+    pub title:String,
+    pub content:String,
+}
+
+impl Summary for Post{
+    fn summary(&self)-> String {
+        format!("文章{}", self.title)
+    }
+}
+
+pub struct Weibo{
+    pub title:String,
+    pub content:String
+}
+
+impl Summary for Weibo{
+    fn summary(&self)->String {
+        format!("{}",self.title)
+    }
+}
 
 struct P<T>{
     x:T,
