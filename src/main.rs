@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use num::complex::Complex;
 struct Struct{
     e:i32
@@ -110,6 +112,9 @@ impl Summary for Weibo{
     }
 }
 
+fn test<T:Summary +Display>(p:&T)->String{
+    String::new()
+}
 struct P<T>{
     x:T,
     y:T,
