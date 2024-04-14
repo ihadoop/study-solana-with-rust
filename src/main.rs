@@ -2,6 +2,11 @@ use num::complex::Complex;
 struct Struct{
     e:i32
 }
+#[derive(Debug)]
+ struct File {
+   name: String,
+   data: Vec<u8>,
+ }
 fn main() {
 
     let (a, b, c, d, e);
@@ -16,7 +21,7 @@ fn main() {
    let k  = (-42_f32).sqrt();
    if !k.is_nan(){
    print!("k is:{}",k);
-}
+    }
 
 let f = 1.03323f32;
 
@@ -65,10 +70,89 @@ println!("{}",s);
     let new_str = "ddddd";
 
     string_test();
+    struct_test();
+    test_enum();
+    test_option();
+    let r = test_match(Coin::AUD);
+
+    println!("{}",r);
+    test_if_let();
+    let p = Point::new(1, 2);
+    p.diff();
 
 
 }
 
+
+struct Point{
+    x:i32,
+    y:i32
+}
+impl Point{
+
+    fn new(x:i32,y:i32)->Point{
+       Point { x: x, y: y}
+    }
+    fn diff(&self)->i32{
+        return self.x-self.y;
+    }
+}
+fn test_if_let(){
+
+    let a = Some(100);
+    println!("{:?}",a);
+    if let Some(a) = a{
+        println!("{:?}",a);
+    }
+
+    println!("{:?}",a);
+
+}
+
+
+enum Coin{
+    JP,CN,AUD
+}
+fn test_match(coin:Coin)->i32{
+
+    match coin{
+        Coin::CN=>1,
+        Coin::JP | Coin::AUD =>3,
+        _=>2
+    }
+
+}
+
+fn test_option(){
+
+    let a = Some(5);
+    let r = plus_one(a);
+    println!("{:?}",r);
+    
+}
+
+fn plus_one(data:Option<i32>)->Option<i32>{
+
+    match data {
+            Some(i)=>Some(i+1),
+            None=>None
+    }
+
+}
+
+
+#[derive(Debug)]
+enum  PokerSuit{
+    Hearts,
+    Diamonds
+}
+fn test_enum(){
+    let heart = PokerSuit::Hearts;
+    let diamond = PokerSuit::Diamonds;
+
+    println!("{:?}",heart);
+    println!("{:?}",diamond);
+}
 
 fn string_test(){
 
@@ -98,7 +182,38 @@ let mut string_pop = String::from("rust pop 中文!");
     //dbg!(s4);
     tuple_test();
 
+    let user = User {
+            name:String::from("value"),
+            age:32,
+            male:true
+    };
+    //struct_test();
 }
+
+
+
+ fn struct_test() {
+   let f1 = File {
+     name: String::from("f1.txt"),
+     data: Vec::new(),
+   };
+
+   let f1_name = &f1.name;
+   let f1_length = &f1.data.len();
+
+   println!("{:?}", f1);
+   println!("{} is {} bytes long", f1_name, f1_length);
+   println!("{:?}", f1);
+    dbg!(&f1);
+    dbg!(f1);
+ }
+
+struct User{
+    name:String,
+    age:i32,
+    male:bool
+}
+
 fn tuple_test(){
 
     let tup = (1,2,3);
