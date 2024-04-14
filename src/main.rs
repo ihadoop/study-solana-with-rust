@@ -79,11 +79,21 @@ println!("{}",s);
     test_if_let();
     let p = Point::new(1, 2);
     p.diff();
+let p11 = P{x:1,y:2};
 
+println!("{}",p11.x());
 
 }
 
-
+struct P<T>{
+    x:T,
+    y:T,
+}
+impl <T> P<T> {
+    fn x(&self)->&T{
+        &self.x
+    }
+}
 struct Point{
     x:i32,
     y:i32
