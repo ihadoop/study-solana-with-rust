@@ -90,10 +90,9 @@ let xy1 = XY{x:1,y:2};
 let xy2 = XY{x:3,y:4};
 let xy3 = xy1+xy2;
 
-println!("{:?}",xy3);
+println!("{}",xy3);
 
 }
-#[derive(Debug)]
 struct XY<T>{
     x:T,
     y:T
@@ -108,10 +107,14 @@ type Output = XY<T>;
             y:self.y+xy.y
         }
     }
-
-
 }
 
+impl<T:Display> std::fmt::Display for XY<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+
+        write!(f, "sunshine {{ x: {}, y: {} }}", self.x, self.y)
+    }
+}
 
 pub trait Summary{
     fn summary(&self)->String;
