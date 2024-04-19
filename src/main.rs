@@ -1,6 +1,6 @@
 use std::fmt::Display;
-
 use num::complex::Complex;
+use std::ops::Add;
 struct Struct{
     e:i32
 }
