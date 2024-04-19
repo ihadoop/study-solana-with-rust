@@ -85,7 +85,34 @@ let p11 = P{x:1,y:2};
 
 println!("{}",p11.x());
 
+
+let xy1 = XY{x:1,y:2};
+let xy2 = XY{x:3,y:4};
+let xy3 = xy1+xy2;
+
+println!("{:?}",xy3);
+
 }
+#[derive(Debug)]
+struct XY<T>{
+    x:T,
+    y:T
+}
+
+impl <T:Add<T,Output = T>> Add for XY<T> {
+
+type Output = XY<T>;
+    fn add(self, xy: XY<T>) -> Self::Output {
+        XY{
+            x:self.x+xy.x,
+            y:self.y+xy.y
+        }
+    }
+
+
+}
+
+
 pub trait Summary{
     fn summary(&self)->String;
 }
