@@ -2,6 +2,10 @@ use std::fmt::Display;
 use num::complex::Complex;
 use std::ops::Add;
 use std::collections::HashMap;
+use std::hash::BuildHasherDefault;
+
+// 引入第三方的哈希函数
+use twox_hash::XxHash64;
 struct Struct{
     e:i32
 }
@@ -97,8 +101,39 @@ let person = Person;
 person.fly();
 Pilot::fly(&person);
 test_vec();
+test_hashmap();
+
 }
 
+fn test_hashmap(){
+    let teams_list = vec![
+        ("中国队".to_string(), 100),
+        ("美国队".to_string(), 10),
+        ("日本队".to_string(), 50),
+    ];
+
+    let  teams_map:HashMap<_,_> =  teams_list.into_iter().collect();
+
+    /**
+    for k in &teams_list{
+        teams_map.insert(&k.0, k.1);
+    }
+     */
+    println!("{:?}",teams_map);
+
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("value"), 100);
+    scores.insert(String::from("value2"), 200);
+
+    for (k,v) in &scores{
+        println!("{k}--{v}");
+    }
+
+    let b = scores.get(&String::from("value"));
+    
+}
 fn test_vec(){
 
     let mut v = Vec::with_capacity(10);
