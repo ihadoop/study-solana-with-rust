@@ -1,6 +1,7 @@
 use std::fmt::Display;
 use num::complex::Complex;
 use std::ops::Add;
+use std::collections::HashMap;
 struct Struct{
     e:i32
 }
@@ -95,9 +96,22 @@ println!("{}",xy3);
 let person = Person;
 person.fly();
 Pilot::fly(&person);
+test_vec();
 }
 
+fn test_vec(){
 
+    let mut v = Vec::with_capacity(10);
+    v.push(1);
+
+    let mut k  =vec![1,2,3,4];
+    let x = &k[2];
+
+    k.sort();
+
+
+    k.sort_by(|a,b| a.cmp(b));
+}
 
 struct Person;
 
