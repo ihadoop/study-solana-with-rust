@@ -92,7 +92,41 @@ let xy3 = xy1+xy2;
 
 println!("{}",xy3);
 
+let person = Person;
+person.fly();
+Pilot::fly(&person);
 }
+
+
+
+struct Person;
+
+trait Pilot {
+    fn fly(&self);
+}
+
+trait  Wizard {
+    fn fly(&self);
+}
+
+impl Pilot for Person{
+    fn fly(&self){
+        println!("Pilot----");
+    }
+}
+
+impl  Wizard for Person {
+    fn fly(&self){
+        println!("Wizard----");
+    }
+}
+
+impl  Person {
+    fn fly(&self){
+        println!("person----");
+    } 
+}
+
 struct XY<T>{
     x:T,
     y:T
