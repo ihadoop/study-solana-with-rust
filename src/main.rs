@@ -1,8 +1,11 @@
 use std::fmt::Display;
+use std::io::ErrorKind;
 use num::complex::Complex;
 use std::ops::Add;
 use std::collections::HashMap;
 use std::hash::BuildHasherDefault;
+use std::net::Ipv4Addr;
+use std::fs::File;
 
 // 引入第三方的哈希函数
 use twox_hash::XxHash64;
@@ -10,7 +13,7 @@ struct Struct{
     e:i32
 }
 #[derive(Debug)]
- struct File {
+ struct File1 {
    name: String,
    data: Vec<u8>,
  }
@@ -102,9 +105,55 @@ person.fly();
 Pilot::fly(&person);
 test_vec();
 test_hashmap();
+test_life();
+test_panic();
 
 }
+fn test_panic(){
+   // panic!("error")
 
+   let ip:Ipv4Addr = "127.0.0.1".parse().unwrap();
+
+   let f = File::open("hello.txt");
+    let f = match  f {
+        Ok(file)=> file,
+        Err(error)=> {
+            
+                match error.kind() {
+                        ErrorKind::NotFound => match File::create("hello.txt"){
+                            Ok(fc)=>fc,
+                            Err(e)=>panic!("sss")
+                        },
+                        other_error=>panic!("ssss")
+
+                }
+             
+                
+        },
+    };
+   
+
+}
+fn test_life(){
+    let string1 = String::from("long string is long");
+
+    {
+        let string2 = String::from("xyz");
+        let result = longest(string1.as_str(), string2.as_str());
+        println!("The longest string is {}", result);
+    }
+
+
+    let a:&'static str = "sunshine";
+}
+fn longest<'a>(x:&'a str,y:&'a str)-> &'a str{
+    if x.len()>y.len(){
+         x
+        }
+   else{
+   y
+}
+}
 fn test_hashmap(){
     let teams_list = vec![
         ("中国队".to_string(), 100),
@@ -346,7 +395,7 @@ let mut string_pop = String::from("rust pop 中文!");
 
 
  fn struct_test() {
-   let f1 = File {
+   let f1 = File1 {
      name: String::from("f1.txt"),
      data: Vec::new(),
    };
