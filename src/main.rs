@@ -1,5 +1,5 @@
 use std::fmt::Display;
-use std::io::ErrorKind;
+use std::io::{self,ErrorKind, Read};
 use num::complex::Complex;
 use std::ops::Add;
 use std::collections::HashMap;
@@ -107,6 +107,30 @@ test_vec();
 test_hashmap();
 test_life();
 test_panic();
+let s = test_readfile();
+match s {
+    Ok(s)=>println!("{}",s),
+    Err(error)=>println!("read file error")
+}
+
+}
+fn test_readfile()->Result<String,io::Error>{
+
+    let f = File::open("hello.txt");
+    let mut f = match  f {
+        Ok(f)=>f,
+        Err(error)=>return Err(error),
+    };
+
+let mut s = String::new();
+
+match  f.read_to_string(&mut s) {
+    Ok(str_)=>Ok(s),
+    Err(e) => Err(e),
+}
+
+
+
 
 }
 fn test_panic(){
@@ -131,6 +155,8 @@ fn test_panic(){
                 
         },
     };
+
+    //let f_pointer = File::open("path").expect("msg");
    
 
 }
