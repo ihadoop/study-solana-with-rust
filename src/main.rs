@@ -114,6 +114,9 @@ match s {
 }
 
 crate::test_mod::pr();
+println!("{:04}", 1);  
+println!("Hello {:1$}!", "x", 5);
+
 
 }
 mod test_mod{
