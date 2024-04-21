@@ -113,7 +113,25 @@ match s {
     Err(error)=>println!("read file error")
 }
 
+crate::test_mod::pr();
+
 }
+mod test_mod{
+
+    pub fn pr(){
+        println!("sunshine--com");
+    }
+
+
+    mod  mod1{
+
+            fn pr(){
+                super::pr();
+            }
+
+    }
+}
+
 fn test_readfile()->Result<String,io::Error>{
 
     let f = File::open("hello.txt");
@@ -160,6 +178,7 @@ fn test_panic(){
    
 
 }
+
 fn test_life(){
     let string1 = String::from("long string is long");
 
