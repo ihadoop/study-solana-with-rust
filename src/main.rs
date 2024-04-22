@@ -118,12 +118,49 @@ fn test_unsafe() {
     unsafe {
         println!("{:?}", *r);
     }
+    let a: Box<i32> = Box::new(10);
+    println!("{:?}", &a);
 
+    let (address, len) = get_str_address_len();
 
+    let str = get_str_at_location(address, len);
 
+    println!("add:{},len:{},value:{}", address, len, str);
 
+    let a: Box<i32> = Box::new(10);
 
+    let pointer: *const i32 = &*a;
+    let c: *const i32 = Box::into_raw(a);
+    println!("{}", pointer == c);
+    unsafe {
+        abs(1);
+        std::arch::asm!("nop");
+    }
 
+    let x: u64;
+unsafe {
+    std::arch::asm!("mov {}, 5", out(reg) x);
+}
+assert_eq!(x, 5);
+
+}
+extern "C" {
+    fn abs(input: i32) -> i32;
+}
+// 在指定的内存地址读取字符串
+fn get_str_at_location(pointer: usize, length: usize) -> &'static str {
+    unsafe {
+        std::str::from_utf8_unchecked(std::slice::from_raw_parts(pointer as *const u8, length))
+    }
+}
+
+fn get_str_address_len() -> (usize, usize) {
+    let str = "String::fromvalue";
+    let address = str.as_ptr() as usize;
+
+    let len = str.len();
+
+    (address, len)
 }
 
 mod test_mod {
