@@ -115,9 +115,6 @@ fn test_unsafe() {
     unsafe {
         println!("{}", *r);
     }
-
-
-    
 }
 
 mod test_mod {
