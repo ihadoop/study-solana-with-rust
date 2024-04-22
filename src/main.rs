@@ -1,3 +1,4 @@
+use mysql::consts;
 use num::complex::Complex;
 use std::collections::HashMap;
 use std::fmt::Display;
@@ -112,9 +113,17 @@ fn main() {
 fn test_unsafe() {
     let mut num = 5;
     let r = &num as *const i32;
+    let r2 = &mut num as *const i32;
+
     unsafe {
-        println!("{}", *r);
+        println!("{:?}", *r);
     }
+
+
+
+
+
+
 }
 
 mod test_mod {
