@@ -109,7 +109,29 @@ fn main() {
     println!("Hello {:1$}!", "x", 5);
 
     test_unsafe();
+
+    test_async();
+
+
 }
+fn test_async(){
+    let futures = do_something();
+    futures::executor::block_on(futures);
+    futures::executor::block_on(hello_world());
+}
+async fn do_something(){
+    println!("do_something")
+}
+
+async fn hello_world() {
+    hello_cat().await;
+    println!("hello, world!");
+}
+
+async fn hello_cat() {
+    println!("hello, kitty!");
+}
+
 fn test_unsafe() {
     let mut num = 5;
     let r = &num as *const i32;
