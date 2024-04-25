@@ -112,8 +112,25 @@ fn main() {
 
     test_async();
 
+    let mut foo = Foo;
+
+    let loan = foo.mutate_and_share();
+    foo.share();
+    //println!("{:?}",loan)
 
 }
+
+
+#[derive(Debug)]
+struct Foo;
+
+impl Foo {
+    fn mutate_and_share(&mut self) -> &Self {
+        &*self
+    }
+    fn share(&self) {}
+}
+
 fn test_async(){
     let futures = do_something();
     futures::executor::block_on(futures);
