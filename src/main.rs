@@ -114,12 +114,32 @@ fn main() {
 
     let mut foo = Foo;
 
-    let loan = foo.mutate_and_share();
+    let mut loan = foo.mutate_and_share();
     foo.share();
     //println!("{:?}",loan)
+   // let closure_slision = |x: &i32| -> &i32 { x };
+   let closure_fn = fun(|x: &i32| -> &i32 { x });
+
+   let r11 = &mut vec![1,2,3];
+    let rr: &Vec<_> = &*r11;
 
 }
+fn fun<T, F: Fn(&T) -> &T>(f: F) -> F {
+    f
+ }
 
+fn fn_elision(x: &i32) -> &i32 { x }
+
+struct ImportantExcerpt<'a> {
+    part: &'a str,
+}
+
+impl<'a:'b,'b> ImportantExcerpt<'a>{
+    fn announce_and_return_part(&'a self,announcement: &'b str)->&'b str{
+        println!("{}",announcement);
+        self.part
+    }
+}
 
 #[derive(Debug)]
 struct Foo;
@@ -128,7 +148,7 @@ impl Foo {
     fn mutate_and_share(&mut self) -> &Self {
         &*self
     }
-    fn share(&self) {}
+    fn share(&mut self) {}
 }
 
 fn test_async(){
