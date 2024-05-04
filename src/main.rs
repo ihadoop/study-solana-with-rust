@@ -1,5 +1,7 @@
 use mysql::consts;
 use num::complex::Complex;
+use std::borrow::Borrow;
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::fs::File;
@@ -9,8 +11,6 @@ use std::net::Ipv4Addr;
 use std::ops::Add;
 use std::sync::{Arc, Barrier};
 use std::thread;
-use std::cell::RefCell;
-
 
 // 引入第三方的哈希函数
 use twox_hash::XxHash64;
@@ -140,6 +140,30 @@ fn main() {
     test_thread();
 
     test_thread_barrier();
+    test_thread_local();
+}
+fn test_thread_local() {
+    thread_local!(static FOO: RefCell<u32> = RefCell::new(1));
+
+    FOO.with(|f| {
+        *f.borrow_mut() = 2;
+    });
+
+    let t = thread::spawn(move ||{
+            FOO.with(|f|{
+                println!("{}",f.borrow());
+                *f.borrow_mut()=3;
+
+
+            });
+    });
+
+    t.join();
+
+
+    FOO.with(|f|{
+        println!("{}",f.borrow());
+    });
 }
 
 fn test_thread_barrier() {
