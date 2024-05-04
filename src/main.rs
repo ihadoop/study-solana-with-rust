@@ -7,6 +7,8 @@ use std::hash::BuildHasherDefault;
 use std::io::{self, ErrorKind, Read};
 use std::net::Ipv4Addr;
 use std::ops::Add;
+use std::sync::{Arc, Barrier};
+use std::thread;
 
 // 引入第三方的哈希函数
 use twox_hash::XxHash64;
@@ -117,31 +119,45 @@ fn main() {
     let mut loan = foo.mutate_and_share();
     foo.share();
     //println!("{:?}",loan)
-   // let closure_slision = |x: &i32| -> &i32 { x };
-   let closure_fn = fun(|x: &i32| -> &i32 { x });
+    // let closure_slision = |x: &i32| -> &i32 { x };
+    let closure_fn = fun(|x: &i32| -> &i32 { x });
 
-   let r11 = &mut vec![1,2,3];
+    let r11 = &mut vec![1, 2, 3];
     let rr: &Vec<_> = &*r11;
 
-
     test_reborrow();
-    let c_str:&'static str = "";
+    let c_str: &'static str = "";
 
     test_static();
 
-
     let xx_ = 1;
-    let sum  =|y:i32| xx_+y;
+    let sum = |y: i32| xx_ + y;
     let yy_ = sum(2);
-    println!("--->{}",yy_);
+    println!("--->{}", yy_);
 
     test_thread();
+
+    test_thread_barrier();
 }
-fn test_thread(){
 
+fn test_thread_barrier() {
+    let mut handles = Vec::with_capacity(5);
+    let barrier = Arc::new(Barrier::new(5));
+    for _ in 0..5 {
+        let b = barrier.clone();
+        handles.push(thread::spawn(move || {
+            println!("before wait");
+            b.wait();
+            println!("after wait");
+        }));
+    }
 
-    let handler = std::thread::spawn(||{
-
+    for h in handles {
+        h.join();
+    }
+}
+fn test_thread() {
+    let handler = std::thread::spawn(|| {
         for i in 1..=10 {
             println!("hi number {} from the spawned thread!", i);
             std::thread::sleep(std::time::Duration::from_millis(1));
@@ -149,67 +165,64 @@ fn test_thread(){
     });
 
     handler.join();
-
-   
 }
 fn test_static() {
     let r1;
     let r2;
     {
-      static STATIC_EXAMPLE: i32 = 42;
-      r1 = &STATIC_EXAMPLE;
-      let x = "&'static str";
-      r2 = x;
-      // r1 和 r2 持有的数据都是 'static 的，因此在花括号结束后，并不会被释放
+        static STATIC_EXAMPLE: i32 = 42;
+        r1 = &STATIC_EXAMPLE;
+        let x = "&'static str";
+        r2 = x;
+        // r1 和 r2 持有的数据都是 'static 的，因此在花括号结束后，并不会被释放
     }
-  
+
     println!("&'static i32: {}", r1); // -> 42
     println!("&'static str: {}", r2); // -> &'static str
-  
+
     let r3: &str;
-  
+
     {
-      let s1 = "String".to_string();
-  
-      // s1 虽然没有 'static 生命周期，但是它依然可以满足 T: 'static 的约束
-      // 充分说明这个约束是多么的弱。。
-      static_bound(&s1);
-  
-      // s1 是 String 类型，没有 'static 的生命周期，因此下面代码会报错
-      //r3 = &s1;
-  
-      // s1 在这里被 drop
+        let s1 = "String".to_string();
+
+        // s1 虽然没有 'static 生命周期，但是它依然可以满足 T: 'static 的约束
+        // 充分说明这个约束是多么的弱。。
+        static_bound(&s1);
+
+        // s1 是 String 类型，没有 'static 的生命周期，因此下面代码会报错
+        //r3 = &s1;
+
+        // s1 在这里被 drop
     }
     //println!("{}", r3);
-  }
-  
-  fn static_bound<T: Display + 'static>(t: &T) {
+}
+
+fn static_bound<T: Display + 'static>(t: &T) {
     println!("{}", t);
-  }
-fn test_reborrow(){
+}
+fn test_reborrow() {
     let mut p = Point { x: 0, y: 0 };
     let r = &mut p;
     let rr: &Point = &*r;
 
-
     println!("{:?}", r);
     println!("{:?}", rr);
-
-   
 }
 fn fun<T, F: Fn(&T) -> &T>(f: F) -> F {
     f
- }
+}
 
-fn fn_elision(x: &i32) -> &i32 { x }
+fn fn_elision(x: &i32) -> &i32 {
+    x
+}
 
 struct ImportantExcerpt<'a> {
     part: &'a str,
 }
 
-impl<'a:'b,'b> ImportantExcerpt<'a>{
-    fn announce_and_return_part(&'a self,announcement: &'b str)->&'b str{
-        println!("{}",announcement);
+impl<'a: 'b, 'b> ImportantExcerpt<'a> {
+    fn announce_and_return_part(&'a self, announcement: &'b str) -> &'b str {
+        println!("{}", announcement);
         self.part
     }
 }
@@ -224,12 +237,12 @@ impl Foo {
     fn share(&mut self) {}
 }
 
-fn test_async(){
+fn test_async() {
     let futures = do_something();
     futures::executor::block_on(futures);
     futures::executor::block_on(hello_world());
 }
-async fn do_something(){
+async fn do_something() {
     println!("do_something")
 }
 
@@ -270,11 +283,10 @@ fn test_unsafe() {
     }
 
     let x: u64;
-unsafe {
-    std::arch::asm!("mov {}, 5", out(reg) x);
-}
-assert_eq!(x, 5);
-
+    unsafe {
+        std::arch::asm!("mov {}, 5", out(reg) x);
+    }
+    assert_eq!(x, 5);
 }
 extern "C" {
     fn abs(input: i32) -> i32;
