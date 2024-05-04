@@ -9,6 +9,8 @@ use std::net::Ipv4Addr;
 use std::ops::Add;
 use std::sync::{Arc, Barrier};
 use std::thread;
+use std::cell::RefCell;
+
 
 // 引入第三方的哈希函数
 use twox_hash::XxHash64;
