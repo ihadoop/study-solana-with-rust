@@ -135,7 +135,22 @@ fn main() {
     let yy_ = sum(2);
     println!("--->{}",yy_);
 
+    test_thread();
+}
+fn test_thread(){
 
+
+    let handler = std::thread::spawn(||{
+
+        for i in 1..=10 {
+            println!("hi number {} from the spawned thread!", i);
+            std::thread::sleep(std::time::Duration::from_millis(1));
+        }
+    });
+
+    handler.join();
+
+   
 }
 fn test_static() {
     let r1;
