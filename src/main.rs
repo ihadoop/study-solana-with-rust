@@ -9,7 +9,7 @@ use std::hash::BuildHasherDefault;
 use std::io::{self, ErrorKind, Read};
 use std::net::Ipv4Addr;
 use std::ops::Add;
-use std::sync::{Arc, Barrier};
+use std::sync::{Arc, Barrier,Mutex, Condvar,Once};
 use std::thread;
 
 // 引入第三方的哈希函数
@@ -142,6 +142,55 @@ fn main() {
     test_thread_barrier();
     test_thread_local();
     test_source();
+    test_mutex();
+    test_callonce();
+}
+fn test_callonce(){
+    static mut VAL: usize = 0;
+    static INIT: Once = Once::new();
+    let one = thread::spawn(||{
+
+        INIT.call_once(||{
+            unsafe{
+                VAL=1;
+            }
+        });
+    });
+
+    let two = thread::spawn(||{
+
+        INIT.call_once(||{
+            unsafe{
+                VAL=2;
+            }
+        });
+    });
+
+    one.join().unwrap();
+    two.join().unwrap();
+    println!("{:?}",unsafe {VAL});
+
+
+}
+fn test_mutex(){
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+    let pair2 = pair.clone();
+
+    thread::spawn(move|| {
+        let (lock, cvar) = &*pair2;
+        let mut started = lock.lock().unwrap();
+        println!("changing started");
+        *started = true;
+        cvar.notify_one();
+    });
+
+    let (lock, cvar) = &*pair;
+    let mut started = lock.lock().unwrap();
+    while !*started {
+        started = cvar.wait(started).unwrap();
+    }
+
+    println!("started changed");
 }
 fn test_source() {
     let tls = Arc::new(thread_local::ThreadLocal::new());
