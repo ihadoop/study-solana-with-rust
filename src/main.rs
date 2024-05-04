@@ -141,6 +141,36 @@ fn main() {
 
     test_thread_barrier();
     test_thread_local();
+    test_source();
+}
+fn test_source() {
+    let tls = Arc::new(thread_local::ThreadLocal::new());
+    let mut v = vec![];
+    // 创建多个线程
+    for _ in 0..5 {
+        let tls2 = tls.clone();
+        let handle = thread::spawn(move || {
+            // 将计数器加1
+            // 请注意，由于线程 ID 在线程退出时会被回收，因此一个线程有可能回收另一个线程的对象
+            // 这只能在线程退出后发生，因此不会导致任何竞争条件
+            let cell = tls2.get_or(|| std::cell::Cell::new(0));
+            cell.set(cell.get() + 1);
+            
+        });
+        v.push(handle);
+    }
+    for handle in v {
+        handle.join().unwrap();
+    }
+    // 一旦所有子线程结束，收集它们的线程局部变量中的计数器值，然后进行求和
+    let tls = Arc::try_unwrap(tls).unwrap();
+    let total = tls.into_iter().fold(0, |x, y| {
+        // 打印每个线程局部变量中的计数器值，发现不一定有5个线程，
+        // 因为一些线程已退出，并且其他线程会回收退出线程的对象
+        println!("x: {}, y: {}", x, y.get());
+        x + y.get()
+    });
+    println!("total->{}", total);
 }
 fn test_thread_local() {
     thread_local!(static FOO: RefCell<u32> = RefCell::new(1));
@@ -149,20 +179,17 @@ fn test_thread_local() {
         *f.borrow_mut() = 2;
     });
 
-    let t = thread::spawn(move ||{
-            FOO.with(|f|{
-                println!("{}",f.borrow());
-                *f.borrow_mut()=3;
-
-
-            });
+    let t = thread::spawn(move || {
+        FOO.with(|f| {
+            println!("{}", f.borrow());
+            *f.borrow_mut() = 3;
+        });
     });
 
     t.join();
 
-
-    FOO.with(|f|{
-        println!("{}",f.borrow());
+    FOO.with(|f| {
+        println!("{}", f.borrow());
     });
 }
 
