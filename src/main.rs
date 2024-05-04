@@ -144,6 +144,41 @@ fn main() {
     test_source();
     test_mutex();
     test_callonce();
+    test_communication();
+    test_continue_rec();
+}
+fn test_continue_rec(){
+    let (tx, rx) = std::sync::mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(std::time::Duration::from_secs(1));
+        }
+    });
+    
+    for received in rx {
+        println!("Got: {}", received);
+    }
+}
+fn test_communication(){
+    let (s,r) = std::sync::mpsc::channel();
+
+    thread::spawn(move||{
+        s.send(123).unwrap();
+    });
+
+
+   let data =  r.recv().unwrap();
+
+    println!("receive:{}",data);
 }
 fn test_callonce(){
     static mut VAL: usize = 0;
