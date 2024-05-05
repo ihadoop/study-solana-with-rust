@@ -147,7 +147,34 @@ fn main() {
     test_communication();
     test_continue_rec();
     test_congest();
+    test_flume();
+
+    let mm = Mutex::new(1);
+
+        
+        let mut mmm = mm.lock().unwrap();
+        *mmm = 3;
+        drop(mmm);
+    println!("{:?}",mm);
+
+
 }
+fn test_flume(){
+    let (x,y) = flume::unbounded();
+
+    thread::spawn(move||{
+
+       (0..10).for_each(|i|{
+            x.send(i).unwrap();
+       });
+    });
+
+    let result:u32 = y.iter().sum();
+    println!("sum is:{}",result);
+
+
+}
+
 fn test_congest(){
 
     let (send, recv) = std::sync::mpsc::channel();
@@ -184,6 +211,7 @@ fn test_continue_rec(){
         }
     });
     
+    //println!("{:?}",tx);
     for received in rx {
         println!("Got: {}", received);
     }
