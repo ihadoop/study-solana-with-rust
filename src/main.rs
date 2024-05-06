@@ -184,6 +184,15 @@ let v_test = Vector(vec![String::from("1"),String::from("2"),String::from("3")])
 
 println!("{}",v_test);
 
+
+type Meters = u32;
+
+let x: u32 = 5;
+let y: Meters = 5;
+
+println!("x + y = {}", x + y);
+
+
 }
 
 fn test_flume(){
