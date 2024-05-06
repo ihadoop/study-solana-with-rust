@@ -1,5 +1,6 @@
 use mysql::consts;
 use num::complex::Complex;
+use core::fmt;
 use std::borrow::Borrow;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -158,7 +159,33 @@ fn main() {
     println!("{:?}",mm);
 
 
+
+#[derive(Debug)]
+struct MyBox(*mut u8);
+unsafe impl Send for MyBox {}
+
+    let p = MyBox(5 as *mut u8);
+    let t = thread::spawn(move || {
+        println!("{:?}",p);
+        println!("{:?}",*&p.0);
+    });
+
+    t.join().unwrap();
+
+
+struct Vector(Vec<String>);
+
+impl fmt::Display for Vector{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "[{}]", self.0.join(", "))
+    }
 }
+let v_test = Vector(vec![String::from("1"),String::from("2"),String::from("3")]);
+
+println!("{}",v_test);
+
+}
+
 fn test_flume(){
     let (x,y) = flume::unbounded();
 
