@@ -491,6 +491,9 @@ fn test_unsafe() {
 
     let str = get_str_at_location(address, len);
 
+
+
+    
     println!("add:{},len:{},value:{}", address, len, str);
 
     let a: Box<i32> = Box::new(10);
