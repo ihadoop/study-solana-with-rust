@@ -9,7 +9,7 @@ use std::fs::File;
 use std::hash::BuildHasherDefault;
 use std::io::{self, ErrorKind, Read};
 use std::net::Ipv4Addr;
-use std::ops::Add;
+use std::ops::{Add, Deref};
 use std::sync::{Arc, Barrier,Mutex, Condvar,Once};
 use std::thread;
 
@@ -195,8 +195,26 @@ println!("x + y = {}", x + y);
 test_box();
 
 let leak  =test_leak();
-println!("{}",leak)
+println!("{}",leak);
 
+
+let mybox = MyBox1::new(1);
+println!("{}",*mybox)
+
+}
+
+struct MyBox1<T>(T);
+impl<T> MyBox1<T>{
+    fn new(t:T)->MyBox1<T>{
+        MyBox1(t)
+    }
+}
+impl <T> Deref for MyBox1<T> {
+    type Target = T;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
 }
 
 fn test_leak()-> &'static str{
