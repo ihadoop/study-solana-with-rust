@@ -192,9 +192,38 @@ let y: Meters = 5;
 
 println!("x + y = {}", x + y);
 
+test_box();
+
+let leak  =test_leak();
+println!("{}",leak)
 
 }
 
+fn test_leak()-> &'static str{
+    let mut str = String::new();
+    str.push_str("sunshine");
+    Box::leak(str.into_boxed_str())
+}
+fn test_box(){
+    let a   = Box::new(33);
+    println!("{}",a);
+
+    let arr = [0;1000];
+    // 将arr所有权转移arr1，由于 `arr` 分配在栈上，因此这里实际上是直接重新深拷贝了一份数据
+    let arr1 = arr;
+
+    // arr 和 arr1 都拥有各自的栈上数组，因此不会报错
+    println!("{:?}", arr.len());
+    println!("{:?}", arr1.len());
+
+    let arr = vec![Box::new(1), Box::new(2)];
+    let (f,s)  = (&arr[0],&arr[1]);
+
+    println!("{}",**f);
+
+
+
+}
 fn test_flume(){
     let (x,y) = flume::unbounded();
 
@@ -243,7 +272,7 @@ fn test_continue_rec(){
 
         for val in vals {
             tx.send(val).unwrap();
-            thread::sleep(std::time::Duration::from_secs(1));
+            //thread::sleep(std::time::Duration::from_secs(1));
         }
     });
     
