@@ -10,6 +10,7 @@ use std::hash::BuildHasherDefault;
 use std::io::{self, ErrorKind, Read};
 use std::net::Ipv4Addr;
 use std::ops::{Add, Deref};
+use std::rc::{self, Rc};
 use std::sync::{Arc, Barrier,Mutex, Condvar,Once};
 use std::thread;
 
@@ -199,7 +200,19 @@ println!("{}",leak);
 
 
 let mybox = MyBox1::new(1);
-println!("{}",*mybox)
+println!("{}",*mybox);
+test_rc();
+
+}
+fn test_rc(){
+    let a = String::from("value");
+    let rc1  =std::rc::Rc::new(a);
+    println!("{}",Rc::strong_count(&rc1));
+    let rc2 = rc1.clone();
+    println!("{}",Rc::strong_count(&rc2));
+    //drop(&rc1);
+    let rc3 = Rc::clone(&rc1);
+    println!("{}",Rc::strong_count(&rc3));
 
 }
 
